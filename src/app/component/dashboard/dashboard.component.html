@@ -1,0 +1,615 @@
+<div class="container mt-4 shadow-lg p-3 mb-5 bg-body rounded btnContenedor">
+  <button id="btnAdmiClientes" type="button" class="btn btn-success me-md-2" data-bs-toggle="modal"
+    data-bs-target="#modalCliente">
+    Administrar Clientes
+  </button>
+  <button id="btnAdmiCamiones" type="button" class="btn btn-success me-md-2" data-bs-toggle="modal"
+    data-bs-target="#modalCamiones">
+    Administrar Camiones
+  </button>
+  <button id="btnAdmiEncomiendas" type="button" class="btn btn-success me-md-2" data-bs-toggle="modal"
+    data-bs-target="#modalEncomiendas">
+    Administrar Encomiendas
+  </button>
+  <button id="btnCtrlEncomiendas" type="button" class="btn btn-success me-md-2" data-bs-toggle="modal"
+    data-bs-target="#modalControlEncomiendas">
+    Control Encomiendas
+  </button>
+</div>
+
+<!-- tabla -->
+<div class="container container mt-4 shadow-lg p-3 mb-5 bg-body rounded">
+  <div style="display: flex; justify-content: center;">
+    <h2>Guias de envio</h2>
+  </div>
+
+  <button class="btn btn-success my-2 my-sm-0" id="btncreate" type="button" data-bs-toggle="modal" (click)="generarEnvios()">
+    Generar Envios
+  </button>
+  <table id="tablaArticulos" class="table mt-2 table-bordered table-striped ">
+    <thead>
+      <tr class="bg-info">
+        <th scope="col">ID</th>
+        <th scope="col">ID Camion</th>
+        <th scope="col">Peso Total</th>
+        <th scope="col">Total Recaudado</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let envio of vectorEnvio">
+        <td>{{envio.id}}</td>
+        <td>{{envio.id_camion}}</td>
+        <td>{{envio.peso_total}}</td>
+        <td>{{envio.total_recaudado}}</td>
+        <td>
+          <button type="button" class="btn btn-primary me-2" style="margin-right: 10px;" [value]="envio.id"
+            (click)="editar($event)">Editar</button>
+          <button type="button" class="btn btn-danger " [value]="envio.id"
+            (click)="eliminar($event)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- modal Envio_encomienda -->
+<div class="modal fade modal-xl" id="modalAdmiEnvioEncomienda" tabindex="-1" aria-labelledby="exampleModalLabel2"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLabel2">Administrar Clientes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container mt-4 shadow-lg p-3 mb-5 bg-body rounded">
+          <div style="display: flex; justify-content: center;">
+            <h2>Clientes</h2>
+          </div>
+          <button id="btnCrearSocio" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modalCrearCliente">Crear</button>
+          <table id="tablaClientes" class="table mt-2 table-bordered table-striped">
+            <thead>
+              <tr class="text-center">
+                <th>ID</th>
+                <th>ID Envio</th>
+                <th>ID Encomienda</th>
+                <th>Estado de Entrega</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let envio_encomienda of vectorEnvio_encomienda">
+                <td>{{envio_encomienda.id }}</td>
+                <td>{{envio_encomienda.id_envio}}</td>
+                <td>{{envio_encomienda.id_encomienda}}</td>
+                <td>{{envio_encomienda.estado_entrega}}</td>
+                <td>
+                  <button type="button" class="btn btn-primary me-2" style="margin-right: 10px;"
+                    [value]="envio_encomienda.id" (click)="abrirEditarCliente($event)">Editar</button>
+                  <!-- <button type="button" class="btn btn-danger " [value]="envio_encomienda.id"
+                    (click)="eliminarCliente($event)">Eliminar</button> -->
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal Admin cliente -->
+<div class="modal fade modal-xl" id="modalCliente" tabindex="-1" aria-labelledby="exampleModalLabel2"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLabel2">Administrar Clientes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container mt-4 shadow-lg p-3 mb-5 bg-body rounded">
+          <div style="display: flex; justify-content: center;">
+            <h2>Clientes</h2>
+          </div>
+          <button id="btnCrearSocio" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modalCrearCliente">Crear</button>
+          <table id="tablaClientes" class="table mt-2 table-bordered table-striped">
+            <thead>
+              <tr class="text-center">
+                <th>Cedula</th>
+                <th>Nombres</th>
+                <th>Telefono</th>
+                <th>Direccion</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let cliente of vectorClientes">
+                <td>{{cliente.cedula }}</td>
+                <td>{{cliente.nombres}}</td>
+                <td>{{cliente.telefono}}</td>
+                <td>{{cliente.direccion}}</td>
+                <td>
+                  <button type="button" class="btn btn-primary me-2" style="margin-right: 10px;"
+                    [value]="cliente.codigo" (click)="abrirEditarCliente($event)">Editar</button>
+                  <button type="button" class="btn btn-danger " [value]="cliente.codigo"
+                    (click)="eliminarCliente($event)">Eliminar</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal Admin Camiones -->
+<div class="modal fade modal-xl" id="modalCamiones" tabindex="-1" aria-labelledby="exampleModalLabel2"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLabel2">Administrar Camiones</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container mt-4 shadow-lg p-3 mb-5 bg-body rounded">
+          <div style="display: flex; justify-content: center;">
+            <h2>Camiones</h2>
+          </div>
+          <!-- <button id="btnCrearSocio" type="button" class="btn btn-primary" data-bs-toggle="modal">Crear</button> -->
+          <button id="btnCrearCamion" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modalCrearCamion">Crear</button>
+          <table id="tablaSocios" class="table mt-2 table-bordered table-striped">
+            <thead>
+              <tr class="text-center">
+                <th>Codigo</th>
+                <th>Placa</th>
+                <th>Propietario</th>
+                <th>Peso</th>
+                <th>Estado</th>
+                <th>Accciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let camion of vectorCamiones">
+                <td>{{camion.id}}</td>
+                <td>{{camion.placa }}</td>
+                <td>{{camion.propietario}}</td>
+                <td>{{camion.peso}}</td>
+                <td>{{camion.estado}}</td>
+                <td>
+                  <button type="button" class="btn btn-primary me-2" style="margin-right: 10px;" [value]="camion.id"
+                    (click)="abrirEditarCamion($event)">Editar</button>
+                  <button type="button" class="btn btn-danger " [value]="camion.id"
+                    (click)="eliminarCamion($event)">Eliminar</button>
+                </td>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal Admin Encomiendas -->
+<div class="modal fade modal-xl" id="modalEncomiendas" tabindex="-1" aria-labelledby="exampleModalLabel2"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLabel2">Administrar Encomiendas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container mt-4 shadow-lg p-3 mb-5 bg-body rounded">
+          <div style="display: flex; justify-content: center;">
+            <h2>Encomiendas</h2>
+          </div>
+          <!-- <button id="btnCrearSocio" type="button" class="btn btn-primary" data-bs-toggle="modal">Crear</button> -->
+
+          <button id="btnCrearEncomienda" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modalCrearEncomiendas">Crear</button>
+          <table id="tablaSocios" class="table mt-2 table-bordered table-striped">
+            <thead>
+              <tr class="text-center">
+                <th>Codigo</th>
+                <th>Peso</th>
+                <th>Direccion</th>
+                <th>Costo Envio</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let encomienda of vectorEncomiendas">
+                <td>{{encomienda.codigo}}</td>
+                <td>{{encomienda.peso}}</td>
+                <td>{{encomienda.direccion}}</td>
+                <td>{{encomienda.costo_envio}}</td>
+                <td>{{encomienda.estado}}</td>
+                <td>
+                  <button type="button" class="btn btn-primary me-2" style="margin-right: 10px;"
+                    [value]="encomienda.codigo" (click)="abrirEditarEncomienda($event)">Editar</button>
+                  <button type="button" class="btn btn-danger " [value]="encomienda.codigo"
+                    (click)="eliminarEncomienda($event)">Eliminar</button>
+                </td>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- modal Control Encomiendas -->
+<div class="modal fade modal-xl" id="modalControlEncomiendas" tabindex="-1" aria-labelledby="exampleModalLabel2"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLabel2">Administrar Encomiendas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container mt-4 shadow-lg p-3 mb-5 bg-body rounded">
+          <div style="display: flex; justify-content: center;">
+            <h2>Socios</h2>
+          </div>
+          <button id="btnCrearSocio" type="button" class="btn btn-primary" data-bs-toggle="modal">Crear</button>
+          <table id="tablaSocios" class="table mt-2 table-bordered table-striped">
+            <thead>
+              <tr class="text-center">
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Fecha de Nacimiento</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Crear Cliente -->
+<div class="modal fade" id="modalCrearCliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Crear Cliente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="cedulaCliente" class="col-form-label">Cedula:</label>
+            <input id="cedulaCliente" type="text" class="form-control" required [(ngModel)]="aggCedCli">
+          </div>
+          <div class="mb-3">
+            <label for="nombresCliente" class="col-form-label">Nombres:</label>
+            <input id="nombresCliente" type="text" class="form-control" required [(ngModel)]="aggNomCli">
+          </div>
+          <div class="mb-3">
+            <label for="telefonoCliente" class="col-form-label">Telefono:</label>
+            <input id="telefonoCliente" type="text" class="form-control" required [(ngModel)]="aggtelCli">
+          </div>
+          <div class="mb-3">
+            <label for="direccionCliente" class="col-form-label">Direccion:</label>
+            <input id="direccionCliente" type="text" class="form-control" required [(ngModel)]="aggdirCli">
+          </div>
+          <!-- <div class="mb-3">
+              <label for="selectTipoCliente">Tipo</label><br><br>
+              <select name="selectTipoCliente" id="selectTipoCliente" class="form-control" required>
+                <option value="Normal">Normal</option>
+                <option value="Exclusivo">Exclusivo</option>
+                <option value="Vip">Vip</option>
+              </select>
+            </div> -->
+          <!-- <div class="mb-3">
+              <label for="dateSocio">Fecha de Nacimiento</label><br><br>
+              <input id="dateSocio" type="date" name="dateSocio" required>
+            </div> -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+              (click)="agregarCliente()">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Crear Camion -->
+<div class="modal fade" id="modalCrearCamion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Crear Camion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="placaCamion" class="col-form-label">Placa:</label>
+            <input id="placaCamion" type="text" class="form-control" required [(ngModel)]="aggPlaCam">
+          </div>
+          <div class="mb-3">
+            <label for="propietarioCamion" class="col-form-label">Propietario:</label>
+            <input id="propietarioCamion" type="text" class="form-control" required [(ngModel)]="aggProCam">
+          </div>
+          <div class="mb-3">
+            <label for="pesoCamion" class="col-form-label">Peso:</label>
+            <input id="pesoCamion" type="number" class="form-control" required [(ngModel)]="aggPesCam">
+          </div>
+          <div class="mb-3">
+            <label for="estadoCamion" class="col-form-label">Estado:</label>
+            <input id="estadoCamion" type="text" class="form-control" required [(ngModel)]="aggEstCam">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+              (click)="agregarCamion()">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Crear Encomiendas -->
+<div class="modal fade" id="modalCrearEncomiendas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Crear Camion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="pesoEncomienda" class="col-form-label">Peso:</label>
+            <input id="pesoEncomienda" type="number" class="form-control" required [(ngModel)]="aggPesEnc">
+          </div>
+          <div class="mb-3">
+            <label for="direccionEncomienda" class="col-form-label">Direccion:</label>
+            <input id="direccionEncomienda" type="text" class="form-control" required [(ngModel)]="aggDirEnc">
+          </div>
+          <div class="mb-3">
+            <label for="costoEncomienda" class="col-form-label">Costo de Envio:</label>
+            <input id="costoEncomienda" type="number" class="form-control" required [(ngModel)]="aggCosEnc">
+          </div>
+          <div class="mb-3">
+            <label for="estadoEncomienda" class="col-form-label">Estado:</label>
+            <input id="estadoEncomienda" type="text" class="form-control" required [(ngModel)]="aggEstEnc">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+              (click)="agregarEncomienda()">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Clientes -->
+<div class="modal fade" id="modalEditarClientes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Crear Cliente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="eCedulaCliente" class="col-form-label">Cedula:</label>
+            <input id="eCedulaCliente" type="text" class="form-control" required [(ngModel)]="edtCedCli" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="mb-3">
+            <label for="eNombresCliente" class="col-form-label">Nombres:</label>
+            <input id="eNombresCliente" type="text" class="form-control" required [(ngModel)]="edtNomCli" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="mb-3">
+            <label for="eTelefonoCliente" class="col-form-label">Telefono:</label>
+            <input id="eTelefonoCliente" type="text" class="form-control" required [(ngModel)]="edtTelCli" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="mb-3">
+            <label for="eDireccionCliente" class="col-form-label">Direccion:</label>
+            <input id="eDireccionCliente" type="text" class="form-control" required [(ngModel)]="edtDirCli" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+              (click)="editarCliente()">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Crear Camion -->
+<div class="modal fade" id="modalEditarCamiones" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Crear Camion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="ePlacaCamion" class="col-form-label">Placa:</label>
+            <input id="ePlacaCamion" type="text" class="form-control" required [(ngModel)]="edtPlaCam" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="mb-3">
+            <label for="ePropietarioCamion" class="col-form-label">Propietario:</label>
+            <input id="ePropietarioCamion" type="text" class="form-control" required [(ngModel)]="edtProCam" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="mb-3">
+            <label for="ePesoCamion" class="col-form-label">Peso:</label>
+            <input id="ePesoCamion" type="number" class="form-control" required [(ngModel)]="edtPesCam" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="mb-3">
+            <label for="eEstadoCamion" class="col-form-label">Estado:</label>
+            <input id="eEstadoCamion" type="text" class="form-control" required [(ngModel)]="edtEstCam" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+              (click)="editarCamion()">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Encomiendas -->
+<div class="modal fade" id="modalEditarEncomiendas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Encomienda</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="pesoEncomienda" class="col-form-label">Peso:</label>
+            <input id="pesoEncomienda" type="number" class="form-control" required [(ngModel)]="edtPesEnc" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="mb-3">
+            <label for="direccionEncomienda" class="col-form-label">Direccion:</label>
+            <input id="direccionEncomienda" type="text" class="form-control" required [(ngModel)]="edtDirEnc" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="mb-3">
+            <label for="costoEncomienda" class="col-form-label">Costo de Envio:</label>
+            <input id="costoEncomienda" type="number" class="form-control" required [(ngModel)]="edtCosEnc" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="mb-3">
+            <label for="estadoEncomienda" class="col-form-label">Estado:</label>
+            <input id="estadoEncomienda" type="text" class="form-control" required [(ngModel)]="edtEstEnc" [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+              (click)="editarEncomienda()">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- Modal antiguo -->
+<div class="modal fade" id="modal_heroes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Datos del Personaje</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="Codigo">Codigo </label>
+            <input type="text" class="form-control" [(ngModel)]="cod" id="idCodigo" >
+          </div>
+          <div class="form-group">
+            <label for="Nombre">Nombre </label>
+            <input type="text" class="form-control" [(ngModel)]="nom" id="nombrePersonaje">
+          </div>
+          <div class="form-group">
+            <label for="Ciudad">Ciudad </label>
+            <input type="text" class="form-control" [(ngModel)]="ciu" id="ciudadPersonaje">
+          </div>
+          <div class="form-group">
+            <label for="Fuerza">Poder </label>
+            <input type="number" class="form-control" [(ngModel)]="pod" id="poderPersonaje">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="agregar()">Guardar</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal antiguo-->
+<div class="modal fade" id="editar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar datos del Personaje</h5>
+        <button type="button" class="close" (click)="cerrarModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="Codigo">Codigo </label>
+            <input type="text" class="form-control" [(ngModel)]="cod" [ngModelOptions]="{standalone: true}"
+              id="idCodigo">
+          </div>
+          <div class="form-group">
+            <label for="Nombre">Nombre </label>
+            <input type="text" class="form-control" [(ngModel)]="nom" [ngModelOptions]="{standalone: true}"
+              id="nombrePersonaje">
+          </div>
+          <div class="form-group">
+            <label for="Ciudad">Ciudad </label>
+            <input type="text" class="form-control" [(ngModel)]="ciu" [ngModelOptions]="{standalone: true}"
+              id="ciudadPersonaje">
+          </div>
+          <div class="form-group">
+            <label for="Fuerza">Poder </label>
+            <input type="number" class="form-control" [(ngModel)]="pod" [ngModelOptions]="{standalone: true}"
+              id="poderPersonaje">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="actualizar()">Actualizar</button>
+      </div>
+    </div>
+  </div>
+</div>

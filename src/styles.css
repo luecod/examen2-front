@@ -1,0 +1,13 @@
+.contenedor{
+    width: 1000px;
+    background-color: white;
+    margin: auto;
+}
+
+.bg-info{
+    color: white;
+}
+
+table{
+    margin-top: 50px;
+}

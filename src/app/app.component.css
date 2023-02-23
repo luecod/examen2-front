@@ -1,0 +1,21 @@
+.inicial {
+  /* background: linear-gradient(-45deg, rgb(122, 225, 243), rgb(236, 201, 87), rgb(224, 41, 154), green); */
+  /* background-color: #E2E4E3; */
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+}
+
+.imagen{
+  width: 100px;
+  position: absolute;
+  left: 200px;
+}
+.imagen2{
+  width: 100px;
+  position: absolute;
+  right: 200px;
+}
+

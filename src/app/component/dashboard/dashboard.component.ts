@@ -27,10 +27,14 @@ export class DashboardComponent implements OnInit {
   vectorCamiones!: Camion[];
   vectorEncomiendas!: Encomienda[];
   vectorEnvio!: Envio[];
-  vectorEnvio_encomienda!: Envio_encomienda[];
+  vectorEnvio_encomienda: Envio_encomienda[] = [];
   idsEnvio = 0;
+  auxListaEnvio_encomienda: Envio_encomienda[] = [];
 
   http = inject(HttpClient);
+
+  modalControl!: any
+  modal!: any;
 
   aggCedCli!: string;
   aggNomCli!: string;
@@ -64,6 +68,10 @@ export class DashboardComponent implements OnInit {
   edtProCam!: string;
   edtPesCam!: number;
   edtEstCam!: string;
+
+  edtIdEE: number = 0;
+  edtEncEE!: number;
+  estEstEntEE!: string;
 
   agregarCliente() {
     this.http.post<Cliente>(this.urlClientes, new Cliente(this.aggCedCli, this.aggNomCli, this.aggtelCli, this.aggdirCli))
@@ -185,17 +193,20 @@ export class DashboardComponent implements OnInit {
     let auxVectorEnvio: Envio[] = [];
     let pesoTotalCamion = 0;
     let idsEnvio = 0;
+    if(this.vectorEnvio.length > 0){
+      idsEnvio = this.vectorEnvio[this.vectorEnvio.length - 1].id;
+    }
     let recaudado = 0;
     let contadorEncomiedas = 0;
     let comprobador = true;
 
     for (let camion of this.vectorCamiones) {
-      if(camion.estado == "Disponible"){
+      if (camion.estado == "Disponible") {
         for (let encomienda of this.vectorEncomiendas) {
           contadorEncomiedas++;
           if (encomienda.estado == "Pendiente") {
             if (pesoTotalCamion + encomienda.peso <= camion.peso) {
-              if(comprobador){
+              if (comprobador) {
                 idsEnvio++;
                 camion.estado = "Ocupado";
                 comprobador = false;
@@ -204,11 +215,14 @@ export class DashboardComponent implements OnInit {
               pesoTotalCamion += encomienda.peso;
               recaudado += encomienda.costo_envio;
               encomienda.estado = "Enviado";
-              auxVectorEnvioEncomienda.push(new Envio_encomienda(idsEnvio, encomienda.codigo, "Entregado"));
+              // console.log("codigo Encomienda: " + encomienda.codigo);
+              let nuevoEnvioEncomienda = new Envio_encomienda(idsEnvio, encomienda.codigo, "Entregado");
+              console.log(nuevoEnvioEncomienda);
+              auxVectorEnvioEncomienda.push(nuevoEnvioEncomienda);
             }
           }
-          if(contadorEncomiedas == this.vectorEncomiendas.length){
-            if(auxVectorEnvioEncomienda.length > auxTamañoVectorEnvioEncomienda){
+          if (contadorEncomiedas == this.vectorEncomiendas.length) {
+            if (auxVectorEnvioEncomienda.length > auxTamañoVectorEnvioEncomienda) {
               auxTamañoVectorEnvioEncomienda = auxVectorEnvioEncomienda.length;
               auxVectorEnvio.push(new Envio(idsEnvio, camion.id, pesoTotalCamion, recaudado, 0));
               comprobador = true;
@@ -232,45 +246,76 @@ export class DashboardComponent implements OnInit {
       this.http.post<Envio>(this.urlEnvio, envio)
         .subscribe((data) => { console.log(data); })
     });
-    auxVectorEnvioEncomienda.forEach((envio_encomienda) => {
-      this.http.post<Envio_encomienda>(this.urlEnvio_encomienda, envio_encomienda)
-        .subscribe((data) => { console.log(data); })
+    auxVectorEnvioEncomienda.forEach((elemenEnvio_encomienda) => {
+      this.http.post<Envio_encomienda>(this.urlEnvio_encomienda, elemenEnvio_encomienda)
+        .subscribe((data) => { console.log(data); location.reload(); })
     });
   }
 
-  generarEnvios2() {
-    let pesoEncomiendas = 0;
-    let recaudado = 0;
-    this.http.get<Encomienda[]>(this.urlEncomiendas)
-      .subscribe((data) => {
-        this.vectorEncomiendas = data;
-        console.log(this.vectorEncomiendas);
-        this.vectorEncomiendas.forEach((encomienda) => {
-          this.http.get<Camion[]>(this.urlCamiones)
-            .subscribe((data) => {
-              this.vectorCamiones = data;
-              console.log(this.vectorCamiones);
-              this.vectorCamiones.forEach((camion) => {
-                if (camion.estado == "Disponible") {
-                  if (camion.peso >= encomienda.peso) {
-                    pesoEncomiendas += encomienda.peso;
-                    if (camion.peso >= pesoEncomiendas) {
-                      recaudado += encomienda.costo_envio;
-                      this.http.put<Camion>(this.urlCamiones + '/' + camion.id, new Camion(camion.placa, camion.propietario, camion.peso, "Ocupado", encomienda.codigo))
-                        .subscribe((data) => { console.log(data); this.traerCamiones(); })
-                      this.http.put<Encomienda>(this.urlEncomiendas + '/' + encomienda.codigo, new Encomienda(encomienda.peso, encomienda.direccion, encomienda.costo_envio, "Enviado"))
-                        .subscribe((data) => { console.log(data); this.traerEncomiendas(); })
-                    } else {
+  abirControl(event: any) {
+    let id = event.target.value;
+    // let nuevoVectorFiltrado = []
+    let nuevoVectorFiltrado = this.vectorEnvio_encomienda.filter((auxEnvio_Encomienda) => auxEnvio_Encomienda.id_envio == id);
+    console.log(nuevoVectorFiltrado);
+    if (nuevoVectorFiltrado != undefined) {
+      this.auxListaEnvio_encomienda = nuevoVectorFiltrado;
+      this.modal = new (window as any).bootstrap.Modal(
+        document.getElementById("modalAdminControlEncomiendas") as HTMLElement
+      );
+      this.modal.show();
+    }
+    // this.abrirModalGeneral("modalEditarClientes");
+  }
 
-                    }
-                  } else {
+  abrirEditarEnvio_encomienda(event: any) {
+    let id = event.target.value;
+    let nuevoEnvio_encomienda = this.auxListaEnvio_encomienda.find((elementEnvioEncomienda) => elementEnvioEncomienda.id == id);
+    console.log(nuevoEnvio_encomienda);
+    if (nuevoEnvio_encomienda != undefined) {
+      this.edtEncEE = nuevoEnvio_encomienda.codigo_encomienda;
+      this.estEstEntEE = nuevoEnvio_encomienda.estado_entrega;
+    }
 
-                  }
-                }
-              })
-            })
+    this.modalControl = new (window as any).bootstrap.Modal(
+      document.getElementById("modalEditarEnvioEncomienda") as HTMLElement
+    );
+    this.modalControl.show();
+  }
+
+  editarEnvioEncomienda() {
+    let nuevoEnvio_encomienda = this.auxListaEnvio_encomienda.find((elementEnvioEncomienda) => elementEnvioEncomienda.codigo_encomienda == this.edtEncEE);
+    if (nuevoEnvio_encomienda != undefined) {
+      nuevoEnvio_encomienda.estado_entrega = this.estEstEntEE;
+      this.http.put<Envio_encomienda>(this.urlEnvio_encomienda + '/' + nuevoEnvio_encomienda.id, nuevoEnvio_encomienda)
+        .subscribe((data) => {
+          console.log(this.auxListaEnvio_encomienda);
         })
+    }
+  }
+
+  completarEnvio() {
+    this.auxListaEnvio_encomienda.forEach((elementEnvioEncomienda) => {
+      let contador = 0;
+      this.vectorEncomiendas.forEach((elementEncomienda) => {
+        if (elementEnvioEncomienda.codigo_encomienda == elementEncomienda.codigo) {
+          if (elementEnvioEncomienda.estado_entrega == "Entregado") {
+            elementEncomienda.estado = "Entregado";
+          } else {
+            elementEncomienda.estado = "Pendiente";
+          }
+        }
       })
+      this.vectorEncomiendas.forEach((elementEncomienda) => {
+        this.http.put<Encomienda>(this.urlEncomiendas + '/' + elementEncomienda.codigo, elementEncomienda)
+          .subscribe((data) => {
+            console.log(data);
+            contador++;
+            if (contador == this.vectorEncomiendas.length) {
+              location.reload();
+            }
+          })
+      })
+    });
   }
 
 
@@ -294,7 +339,7 @@ export class DashboardComponent implements OnInit {
   ciu!: string;
   pod!: string;
 
-  modal!: any;
+
   nuevo!: Personaje;
   constructor(private dbzService: DbzService) { }
 
@@ -383,7 +428,7 @@ export class DashboardComponent implements OnInit {
     this.http.get<Envio_encomienda[]>('http://localhost:3000/api/envio_encomienda')
       .subscribe((data) => {
         this.vectorEnvio_encomienda = data;
-        // console.log(this.vectorEnvio_encomienda);
+        console.log(this.vectorEnvio_encomienda);
       })
   }
 
@@ -393,6 +438,7 @@ export class DashboardComponent implements OnInit {
     this.traerCamiones();
     this.traerEncomiendas();
     this.traerEnvios();
+    this.traerEnvio_encomienda();
 
 
     // codigo antiguo

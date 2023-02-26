@@ -13,7 +13,7 @@
   </button>
   <button id="btnCtrlEncomiendas" type="button" class="btn btn-success me-md-2" data-bs-toggle="modal"
     data-bs-target="#modalControlEncomiendas">
-    Control Encomiendas
+    Resporte
   </button>
 </div>
 
@@ -23,7 +23,8 @@
     <h2>Guias de envio</h2>
   </div>
 
-  <button class="btn btn-success my-2 my-sm-0" id="btncreate" type="button" data-bs-toggle="modal" (click)="generarEnvios()">
+  <button class="btn btn-success my-2 my-sm-0" id="btncreate" type="button" data-bs-toggle="modal"
+    (click)="generarEnvios()">
     Generar Envios
   </button>
   <table id="tablaArticulos" class="table mt-2 table-bordered table-striped ">
@@ -43,10 +44,10 @@
         <td>{{envio.peso_total}}</td>
         <td>{{envio.total_recaudado}}</td>
         <td>
-          <button type="button" class="btn btn-primary me-2" style="margin-right: 10px;" [value]="envio.id"
-            (click)="editar($event)">Editar</button>
-          <button type="button" class="btn btn-danger " [value]="envio.id"
-            (click)="eliminar($event)">Eliminar</button>
+          <button type="button" class="btn btn-primary me-2" style="margin-right: 10px;" [value]="envio.id_camion"
+            (click)="abirControl($event)">Control Encomiendas</button>
+          <!-- <button type="button" class="btn btn-danger " [value]="envio.id"
+            (click)="eliminar($event)">Eliminar</button> -->
         </td>
       </tr>
     </tbody>
@@ -84,11 +85,11 @@
               <tr *ngFor="let envio_encomienda of vectorEnvio_encomienda">
                 <td>{{envio_encomienda.id }}</td>
                 <td>{{envio_encomienda.id_envio}}</td>
-                <td>{{envio_encomienda.id_encomienda}}</td>
+                <td>{{envio_encomienda.codigo_encomienda}}</td>
                 <td>{{envio_encomienda.estado_entrega}}</td>
                 <td>
                   <button type="button" class="btn btn-primary me-2" style="margin-right: 10px;"
-                    [value]="envio_encomienda.id" (click)="abrirEditarCliente($event)">Editar</button>
+                    [value]="envio_encomienda.id" (click)="abrirEditarCliente($event)">asdas</button>
                   <!-- <button type="button" class="btn btn-danger " [value]="envio_encomienda.id"
                     (click)="eliminarCliente($event)">Eliminar</button> -->
                 </td>
@@ -244,6 +245,54 @@
                 </td>
             </tbody>
           </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- modal Admin Control Encomiendas -->
+<div class="modal fade modal-xl" id="modalAdminControlEncomiendas" tabindex="-1" aria-labelledby="exampleModalLabel2"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLabel2">Control de Encomiendas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container mt-4 shadow-lg p-3 mb-5 bg-body rounded">
+          <div style="display: flex; justify-content: center;">
+            <h2>Controlar Entregas</h2>
+          </div>
+          <table id="tablaSocios" class="table mt-2 table-bordered table-striped">
+            <thead>
+              <tr class="text-center">
+                <th>ID</th>
+                <th>ID Envio</th>
+                <th>ID Encomienda</th>
+                <th>Estado Entrega</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let elementoEnvio_encomienda of auxListaEnvio_encomienda">
+                <td>{{elementoEnvio_encomienda.id}}</td>
+                <td>{{elementoEnvio_encomienda.id_envio}}</td>
+                <td>{{elementoEnvio_encomienda.codigo_encomienda}}</td>
+                <td>{{elementoEnvio_encomienda.estado_entrega}}</td>
+                <td>
+                  <button type="button" class="btn btn-primary me-2" style="margin-right: 10px;"
+                    [value]="elementoEnvio_encomienda.id" (click)="abrirEditarEnvio_encomienda($event)">Editar
+                    Entrega</button>
+
+                </td>
+            </tbody>
+          </table>
+          <button type="button" class="btn btn-danger " (click)="completarEnvio()">Completar Envio</button>
         </div>
 
       </div>
@@ -423,19 +472,23 @@
         <form>
           <div class="mb-3">
             <label for="eCedulaCliente" class="col-form-label">Cedula:</label>
-            <input id="eCedulaCliente" type="text" class="form-control" required [(ngModel)]="edtCedCli" [ngModelOptions]="{standalone: true}">
+            <input id="eCedulaCliente" type="text" class="form-control" required [(ngModel)]="edtCedCli"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="mb-3">
             <label for="eNombresCliente" class="col-form-label">Nombres:</label>
-            <input id="eNombresCliente" type="text" class="form-control" required [(ngModel)]="edtNomCli" [ngModelOptions]="{standalone: true}">
+            <input id="eNombresCliente" type="text" class="form-control" required [(ngModel)]="edtNomCli"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="mb-3">
             <label for="eTelefonoCliente" class="col-form-label">Telefono:</label>
-            <input id="eTelefonoCliente" type="text" class="form-control" required [(ngModel)]="edtTelCli" [ngModelOptions]="{standalone: true}">
+            <input id="eTelefonoCliente" type="text" class="form-control" required [(ngModel)]="edtTelCli"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="mb-3">
             <label for="eDireccionCliente" class="col-form-label">Direccion:</label>
-            <input id="eDireccionCliente" type="text" class="form-control" required [(ngModel)]="edtDirCli" [ngModelOptions]="{standalone: true}">
+            <input id="eDireccionCliente" type="text" class="form-control" required [(ngModel)]="edtDirCli"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -460,19 +513,23 @@
         <form>
           <div class="mb-3">
             <label for="ePlacaCamion" class="col-form-label">Placa:</label>
-            <input id="ePlacaCamion" type="text" class="form-control" required [(ngModel)]="edtPlaCam" [ngModelOptions]="{standalone: true}">
+            <input id="ePlacaCamion" type="text" class="form-control" required [(ngModel)]="edtPlaCam"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="mb-3">
             <label for="ePropietarioCamion" class="col-form-label">Propietario:</label>
-            <input id="ePropietarioCamion" type="text" class="form-control" required [(ngModel)]="edtProCam" [ngModelOptions]="{standalone: true}">
+            <input id="ePropietarioCamion" type="text" class="form-control" required [(ngModel)]="edtProCam"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="mb-3">
             <label for="ePesoCamion" class="col-form-label">Peso:</label>
-            <input id="ePesoCamion" type="number" class="form-control" required [(ngModel)]="edtPesCam" [ngModelOptions]="{standalone: true}">
+            <input id="ePesoCamion" type="number" class="form-control" required [(ngModel)]="edtPesCam"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="mb-3">
             <label for="eEstadoCamion" class="col-form-label">Estado:</label>
-            <input id="eEstadoCamion" type="text" class="form-control" required [(ngModel)]="edtEstCam" [ngModelOptions]="{standalone: true}">
+            <input id="eEstadoCamion" type="text" class="form-control" required [(ngModel)]="edtEstCam"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -486,7 +543,8 @@
 </div>
 
 <!-- Modal Editar Encomiendas -->
-<div class="modal fade" id="modalEditarEncomiendas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalEditarEncomiendas" tabindex="-1" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
@@ -497,24 +555,60 @@
         <form>
           <div class="mb-3">
             <label for="pesoEncomienda" class="col-form-label">Peso:</label>
-            <input id="pesoEncomienda" type="number" class="form-control" required [(ngModel)]="edtPesEnc" [ngModelOptions]="{standalone: true}">
+            <input id="pesoEncomienda" type="number" class="form-control" required [(ngModel)]="edtPesEnc"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="mb-3">
             <label for="direccionEncomienda" class="col-form-label">Direccion:</label>
-            <input id="direccionEncomienda" type="text" class="form-control" required [(ngModel)]="edtDirEnc" [ngModelOptions]="{standalone: true}">
+            <input id="direccionEncomienda" type="text" class="form-control" required [(ngModel)]="edtDirEnc"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="mb-3">
             <label for="costoEncomienda" class="col-form-label">Costo de Envio:</label>
-            <input id="costoEncomienda" type="number" class="form-control" required [(ngModel)]="edtCosEnc" [ngModelOptions]="{standalone: true}">
+            <input id="costoEncomienda" type="number" class="form-control" required [(ngModel)]="edtCosEnc"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="mb-3">
             <label for="estadoEncomienda" class="col-form-label">Estado:</label>
-            <input id="estadoEncomienda" type="text" class="form-control" required [(ngModel)]="edtEstEnc" [ngModelOptions]="{standalone: true}">
+            <input id="estadoEncomienda" type="text" class="form-control" required [(ngModel)]="edtEstEnc"
+              [ngModelOptions]="{standalone: true}">
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
               (click)="editarEncomienda()">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Envio Encomienda -->
+<div class="modal fade" id="modalEditarEnvioEncomienda" tabindex="-1" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Entrega de Encomienda</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="idEncomiendaEE" class="col-form-label">Codigo Encomienda:</label>
+            <input id="idEncomiendaEE" type="number" class="form-control" required [(ngModel)]="edtEncEE"
+              [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="mb-3">
+            <label for="estadoEntregaEE" class="col-form-label">Estado de Entrega:</label>
+            <input id="estadoEntregaEE" type="text" class="form-control" required [(ngModel)]="estEstEntEE"
+              [ngModelOptions]="{standalone: true}">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+              (click)="editarEnvioEncomienda()">Guardar</button>
           </div>
         </form>
       </div>
@@ -546,7 +640,7 @@
         <form>
           <div class="form-group">
             <label for="Codigo">Codigo </label>
-            <input type="text" class="form-control" [(ngModel)]="cod" id="idCodigo" >
+            <input type="text" class="form-control" [(ngModel)]="cod" id="idCodigo">
           </div>
           <div class="form-group">
             <label for="Nombre">Nombre </label>

@@ -9,6 +9,7 @@ import { Envio_encomienda } from '../../model/envio_encomienda';
 // importaciones antiguas
 import { Personaje } from 'src/app/model/personaje';
 import { DbzService } from 'src/app/service/dbz.service';
+import { AuxEncomienda } from '../../model/auxEncomienda';
 
 
 @Component({
@@ -164,14 +165,6 @@ export class DashboardComponent implements OnInit {
       })
   }
 
-  // abrirModalCliente() {
-  //   this.modal = new (window as any).bootstrap.Modal(
-  //     document.getElementById("modalCrearCliente") as HTMLElement
-  //   );
-  //   this.modal.show();
-  // }
-
-
   limpiarTodos() {
     this.aggCedCli = "";
     this.aggNomCli = "";
@@ -187,69 +180,63 @@ export class DashboardComponent implements OnInit {
   }
 
   generarEnvios() {
-    let auxVectorEncomienda: Encomienda[] = [];
+    let auxVectorEnvioEncomienda: Envio_encomienda[] = [];
+    let auxTamañoVectorEnvioEncomienda = 0;
+    let auxVectorEnvio: Envio[] = [];
     let pesoTotalCamion = 0;
+    let idsEnvio = 0;
     let recaudado = 0;
-    this.http.get<Camion[]>(this.urlCamiones)
-      .subscribe((data) => {
-        this.vectorCamiones = data;
-        console.log(this.vectorCamiones);
-        // recorre camiones
-        for (const camion of this.vectorCamiones) {
-          if (camion.estado == "Disponible") {
-            // trae encomiendas
-            this.http.get<Encomienda[]>(this.urlEncomiendas)
-              .subscribe((data) => {
-                this.vectorEncomiendas = data;
-                console.log(this.vectorEncomiendas);
-                // recorre encomiendas
-                for (let encomienda of this.vectorEncomiendas) {
-                  if (encomienda.estado == "Pendiente") {
-                    // if (camion.peso >= encomienda.peso) {
-                      pesoTotalCamion += encomienda.peso;
-                      if (camion.peso >= pesoTotalCamion) {
-                        recaudado += encomienda.costo_envio;
-                        auxVectorEncomienda.push(new Encomienda(encomienda.peso, encomienda.direccion, encomienda.costo_envio, "Enviado"));
-                        encomienda.estado = "Enviado";
+    let contadorEncomiedas = 0;
+    let comprobador = true;
 
-                      } else {
-                        this.http.post<Envio>(this.urlEnvio, new Envio(++this.idsEnvio, camion.id, pesoTotalCamion -= encomienda.peso, recaudado, 0))
-                          .subscribe((data) => { console.log("envio creado") })
-                        let idEnvio = this.idsEnvio;
-                        for (let auxEncomienda of auxVectorEncomienda) {
-                          console.log("entro")
-                          this.http.put<Encomienda>(this.urlEncomiendas + '/' + encomienda.codigo, new Encomienda(encomienda.peso, encomienda.direccion, encomienda.costo_envio, "Enviado"))
-                            .subscribe((data) => { console.log("encomienda actualizada") })
-                          this.http.post<Envio_encomienda>(this.urlEnvio_encomienda, new Envio_encomienda(idEnvio, auxEncomienda.codigo, "Entregada"))
-                            .subscribe((data) => { console.log("envio_encomienda creado") })
-                        }
-                        pesoTotalCamion = 0;
-                        recaudado = 0;
-                        auxVectorEncomienda = [];
-                        break;
-                      }
-                    // } else {
-                    //   pesoTotalCamion = 0;
-                    //   recaudado = 0;
-                    //   break
-                    // }
-                  }
-                }
-              })
-            this.http.put<Camion>(this.urlCamiones + '/' + camion.id, new Camion(camion.placa, camion.propietario, camion.peso, "Ocupado", camion.num_viajes))
+    for (let camion of this.vectorCamiones) {
+      if(camion.estado == "Disponible"){
+        for (let encomienda of this.vectorEncomiendas) {
+          contadorEncomiedas++;
+          if (encomienda.estado == "Pendiente") {
+            if (pesoTotalCamion + encomienda.peso <= camion.peso) {
+              if(comprobador){
+                idsEnvio++;
+                camion.estado = "Ocupado";
+                comprobador = false;
+              }
+
+              pesoTotalCamion += encomienda.peso;
+              recaudado += encomienda.costo_envio;
+              encomienda.estado = "Enviado";
+              auxVectorEnvioEncomienda.push(new Envio_encomienda(idsEnvio, encomienda.codigo, "Entregado"));
+            }
+          }
+          if(contadorEncomiedas == this.vectorEncomiendas.length){
+            if(auxVectorEnvioEncomienda.length > auxTamañoVectorEnvioEncomienda){
+              auxTamañoVectorEnvioEncomienda = auxVectorEnvioEncomienda.length;
+              auxVectorEnvio.push(new Envio(idsEnvio, camion.id, pesoTotalCamion, recaudado, 0));
+              comprobador = true;
+            }
+            contadorEncomiedas = 0;
+            pesoTotalCamion = 0;
+            recaudado = 0;
           }
         }
-
-      })
-    this.traerCamiones();
-    this.traerEncomiendas();
-    this.traerEnvio_encomienda();
-    this.traerEnvios();
-    // location.reload();
+      }
+    }
+    this.vectorCamiones.forEach((camion) => {
+      this.http.put<Camion>(this.urlCamiones + '/' + camion.id, camion)
+        .subscribe((data) => { console.log(data); })
+    })
+    this.vectorEncomiendas.forEach((encomienda) => {
+      this.http.put<Encomienda>(this.urlEncomiendas + '/' + encomienda.codigo, encomienda)
+        .subscribe((data) => { console.log(data); })
+    });
+    auxVectorEnvio.forEach((envio) => {
+      this.http.post<Envio>(this.urlEnvio, envio)
+        .subscribe((data) => { console.log(data); })
+    });
+    auxVectorEnvioEncomienda.forEach((envio_encomienda) => {
+      this.http.post<Envio_encomienda>(this.urlEnvio_encomienda, envio_encomienda)
+        .subscribe((data) => { console.log(data); })
+    });
   }
-
-
-
 
   generarEnvios2() {
     let pesoEncomiendas = 0;
@@ -259,7 +246,6 @@ export class DashboardComponent implements OnInit {
         this.vectorEncomiendas = data;
         console.log(this.vectorEncomiendas);
         this.vectorEncomiendas.forEach((encomienda) => {
-
           this.http.get<Camion[]>(this.urlCamiones)
             .subscribe((data) => {
               this.vectorCamiones = data;
@@ -270,7 +256,6 @@ export class DashboardComponent implements OnInit {
                     pesoEncomiendas += encomienda.peso;
                     if (camion.peso >= pesoEncomiendas) {
                       recaudado += encomienda.costo_envio;
-
                       this.http.put<Camion>(this.urlCamiones + '/' + camion.id, new Camion(camion.placa, camion.propietario, camion.peso, "Ocupado", encomienda.codigo))
                         .subscribe((data) => { console.log(data); this.traerCamiones(); })
                       this.http.put<Encomienda>(this.urlEncomiendas + '/' + encomienda.codigo, new Encomienda(encomienda.peso, encomienda.direccion, encomienda.costo_envio, "Enviado"))
@@ -281,10 +266,6 @@ export class DashboardComponent implements OnInit {
                   } else {
 
                   }
-
-
-
-
                 }
               })
             })
@@ -292,35 +273,7 @@ export class DashboardComponent implements OnInit {
       })
   }
 
-  // generarEnvios2() {
-  //   let pesoEncomiendas = 0;
-  //   let recaudado = 0;
-  //   this.http.get<Encomienda[]>(this.urlEncomiendas)
-  //     .subscribe((data) => {
-  //       this.vectorEncomiendas = data;
-  //       console.log(this.vectorEncomiendas);
-  //       this.vectorEncomiendas.forEach((encomienda) => {
 
-  //         this.http.get<Camion[]>(this.urlCamiones)
-  //           .subscribe((data) => {
-  //             this.vectorCamiones = data;
-  //             console.log(this.vectorCamiones);
-  //             this.vectorCamiones.forEach((camion) => {
-  //               if (camion.estado == "Disponible") {
-
-  //                 this.http.put<Camion>(this.urlCamiones + '/' + camion.id, new Camion(camion.placa, camion.propietario, camion.peso, "Ocupado", encomienda.codigo))
-  //                   .subscribe((data) => { console.log(data); this.traerCamiones(); })
-  //                 this.http.put<Encomienda>(this.urlEncomiendas + '/' + encomienda.codigo, new Encomienda(encomienda.peso, encomienda.direccion, encomienda.costo_envio, "Enviado"))
-  //                   .subscribe((data) => { console.log(data); this.traerEncomiendas(); })
-  //               }
-  //             })
-  //           })
-  //       })
-  //     })
-  // }
-
-
-  // }
 
 
 

@@ -11,3 +11,7 @@
 table{
     margin-top: 50px;
 }
+
+body {
+  background-image: url(./assets/images/fondo.jpg);
+}

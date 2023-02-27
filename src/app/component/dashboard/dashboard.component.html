@@ -447,9 +447,16 @@
             <label for="pesoCamion" class="col-form-label">Peso:</label>
             <input id="pesoCamion" type="number" class="form-control" required [(ngModel)]="aggPesCam">
           </div>
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="estadoCamion" class="col-form-label">Estado:</label>
             <input id="estadoCamion" type="text" class="form-control" required [(ngModel)]="aggEstCam">
+          </div> -->
+          <div class="mb-3">
+            <label for="selectTipoCamion">Estado</label><br><br>
+            <select name="selectTipoCamion" id="selectTipoCamion" class="form-control" required [(ngModel)]="aggEstCam">
+              <option value="Disponible">Disponible</option>
+              <option value="Ocupado">Ocupado</option>
+            </select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -484,9 +491,17 @@
             <label for="costoEncomienda" class="col-form-label">Costo de Envio:</label>
             <input id="costoEncomienda" type="number" class="form-control" required [(ngModel)]="aggCosEnc">
           </div>
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="estadoEncomienda" class="col-form-label">Estado:</label>
             <input id="estadoEncomienda" type="text" class="form-control" required [(ngModel)]="aggEstEnc">
+          </div> -->
+          <div class="mb-3">
+            <label for="creEstadoEncomienda">Estado</label><br><br>
+            <select name="creEstadoEncomienda" id="creEstadoEncomienda" class="form-control" required [(ngModel)]="aggEstEnc">
+              <option value="Pendiente">Pendiente</option>
+              <option value="Enviado">Enviado</option>
+              <option value="Entregado">Entregado</option>
+            </select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -565,10 +580,17 @@
             <input id="ePesoCamion" type="number" class="form-control" required [(ngModel)]="edtPesCam"
               [ngModelOptions]="{standalone: true}">
           </div>
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="eEstadoCamion" class="col-form-label">Estado:</label>
             <input id="eEstadoCamion" type="text" class="form-control" required [(ngModel)]="edtEstCam"
               [ngModelOptions]="{standalone: true}">
+          </div> -->
+          <div class="mb-3">
+            <label for="eEstadoCamion">Estado</label><br><br>
+            <select name="eEstadoCamion" id="eEstadoCamion" class="form-control" required [(ngModel)]="edtEstCam" [ngModelOptions]="{standalone: true}">
+              <option value="Disponible">Disponible</option>
+              <option value="Ocupado">Ocupado</option>
+            </select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -607,10 +629,18 @@
             <input id="costoEncomienda" type="number" class="form-control" required [(ngModel)]="edtCosEnc"
               [ngModelOptions]="{standalone: true}">
           </div>
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="estadoEncomienda" class="col-form-label">Estado:</label>
             <input id="estadoEncomienda" type="text" class="form-control" required [(ngModel)]="edtEstEnc"
               [ngModelOptions]="{standalone: true}">
+          </div> -->
+          <div class="mb-3">
+            <label for="estadoEncomienda">Estado</label><br><br>
+            <select name="estadoEncomienda" id="estadoEncomienda" class="form-control" required [(ngModel)]="edtEstEnc" [ngModelOptions]="{standalone: true}">
+              <option value="Pendiente">Pendiente</option>
+              <option value="Enviado">Enviado</option>
+              <option value="Entregado">Entregado</option>
+            </select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -639,10 +669,17 @@
             <input id="idEncomiendaEE" type="number" class="form-control" required [(ngModel)]="edtEncEE"
               [ngModelOptions]="{standalone: true}">
           </div>
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="estadoEntregaEE" class="col-form-label">Estado de Entrega:</label>
             <input id="estadoEntregaEE" type="text" class="form-control" required [(ngModel)]="estEstEntEE"
               [ngModelOptions]="{standalone: true}">
+          </div> -->
+          <div class="mb-3">
+            <label for="estadoEntregaEE">Estado de Entrega:</label><br><br>
+            <select name="estadoEntregaEE" id="estadoEntregaEE" class="form-control" required [(ngModel)]="estEstEntEE" [ngModelOptions]="{standalone: true}">
+              <option value="Entregado">Entregado</option>
+              <option value="No Entregado">No Entregado</option>
+            </select>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

@@ -73,6 +73,8 @@ export class DashboardComponent implements OnInit {
   edtEncEE!: number;
   estEstEntEE!: string;
 
+  idEnvioActual: number = 0;
+
   agregarCliente() {
     this.http.post<Cliente>(this.urlClientes, new Cliente(this.aggCedCli, this.aggNomCli, this.aggtelCli, this.aggdirCli))
       .subscribe((data) => {
@@ -83,7 +85,7 @@ export class DashboardComponent implements OnInit {
   }
 
   agregarCamion() {
-    this.http.post<Camion>(this.urlCamiones, new Camion(this.aggPlaCam, this.aggProCam, this.aggPesCam, this.aggEstCam, 0))
+    this.http.post<Camion>(this.urlCamiones, new Camion(this.aggPlaCam, this.aggProCam, this.aggPesCam, this.aggEstCam))
       .subscribe((data) => { console.log(data); this.traerCamiones(); location.reload(); })
   }
 
@@ -135,7 +137,7 @@ export class DashboardComponent implements OnInit {
   }
 
   editarCamion() {
-    this.http.put<Camion>(this.urlCamiones + '/' + this.edtCodCam, new Camion(this.edtPlaCam, this.edtProCam, this.edtPesCam, this.edtEstCam, 0))
+    this.http.put<Camion>(this.urlCamiones + '/' + this.edtCodCam, new Camion(this.edtPlaCam, this.edtProCam, this.edtPesCam, this.edtEstCam))
       .subscribe((data) => { console.log(data); this.traerCamiones(); })
   }
 
@@ -193,7 +195,7 @@ export class DashboardComponent implements OnInit {
     let auxVectorEnvio: Envio[] = [];
     let pesoTotalCamion = 0;
     let idsEnvio = 0;
-    if(this.vectorEnvio.length > 0){
+    if (this.vectorEnvio.length > 0) {
       idsEnvio = this.vectorEnvio[this.vectorEnvio.length - 1].id;
     }
     let recaudado = 0;
@@ -224,7 +226,7 @@ export class DashboardComponent implements OnInit {
           if (contadorEncomiedas == this.vectorEncomiendas.length) {
             if (auxVectorEnvioEncomienda.length > auxTamañoVectorEnvioEncomienda) {
               auxTamañoVectorEnvioEncomienda = auxVectorEnvioEncomienda.length;
-              auxVectorEnvio.push(new Envio(idsEnvio, camion.id, pesoTotalCamion, recaudado, 0));
+              auxVectorEnvio.push(new Envio(idsEnvio, camion.id, pesoTotalCamion, recaudado, 0, 0));
               comprobador = true;
             }
             contadorEncomiedas = 0;
@@ -255,6 +257,7 @@ export class DashboardComponent implements OnInit {
   abirControl(event: any) {
     let id = event.target.value;
     // let nuevoVectorFiltrado = []
+    this.idEnvioActual = id;
     let nuevoVectorFiltrado = this.vectorEnvio_encomienda.filter((auxEnvio_Encomienda) => auxEnvio_Encomienda.id_envio == id);
     console.log(nuevoVectorFiltrado);
     if (nuevoVectorFiltrado != undefined) {
@@ -294,6 +297,8 @@ export class DashboardComponent implements OnInit {
   }
 
   completarEnvio() {
+    let tamañoVectorEnvioEncomienda = this.auxListaEnvio_encomienda.length;
+    let numeroEncomiendasCanceladas = 0;
     this.auxListaEnvio_encomienda.forEach((elementEnvioEncomienda) => {
       let contador = 0;
       this.vectorEncomiendas.forEach((elementEncomienda) => {
@@ -301,10 +306,26 @@ export class DashboardComponent implements OnInit {
           if (elementEnvioEncomienda.estado_entrega == "Entregado") {
             elementEncomienda.estado = "Entregado";
           } else {
+            numeroEncomiendasCanceladas++;
             elementEncomienda.estado = "Pendiente";
           }
         }
       })
+      let nuevoEnvio = this.vectorEnvio.find((elementEnvio) => elementEnvio.id == this.idEnvioActual);
+      if (nuevoEnvio != undefined) {
+        nuevoEnvio.porcentaje_entrega = ((tamañoVectorEnvioEncomienda - numeroEncomiendasCanceladas) / tamañoVectorEnvioEncomienda) * 100;
+        nuevoEnvio.num_viajes = tamañoVectorEnvioEncomienda - numeroEncomiendasCanceladas;
+        this.http.put<Envio>(this.urlEnvio + '/' + this.idEnvioActual, nuevoEnvio)
+          .subscribe((data) => {
+            this.traerEnvios();
+          });
+        // nuevoEnvio.numero_encomiendas_canceladas = numeroEncomiendasCanceladas;
+        // nuevoEnvio.numero_encomiendas_entregadas = tamañoVectorEnvioEncomienda - numeroEncomiendasCanceladas;
+        // this.http.put<Envio>(this.urlEnvio + '/' + nuevoEnvio.id, nuevoEnvio)
+        //   .subscribe((data) => {
+        //     console.log(data);
+        //   })
+      }
       this.vectorEncomiendas.forEach((elementEncomienda) => {
         this.http.put<Encomienda>(this.urlEncomiendas + '/' + elementEncomienda.codigo, elementEncomienda)
           .subscribe((data) => {

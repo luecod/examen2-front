@@ -12,7 +12,7 @@
     Administrar Encomiendas
   </button>
   <button id="btnCtrlEncomiendas" type="button" class="btn btn-success me-md-2" data-bs-toggle="modal"
-    data-bs-target="#modalControlEncomiendas">
+    data-bs-target="#modalReporte">
     Resporte
   </button>
 </div>
@@ -31,20 +31,16 @@
     <thead>
       <tr class="bg-info">
         <th scope="col">ID</th>
-        <th scope="col">ID Camion</th>
-        <th scope="col">Peso Total</th>
-        <th scope="col">Total Recaudado</th>
+        <th scope="col">Descripción</th>
         <th scope="col">Acciones</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let envio of vectorEnvio">
         <td>{{envio.id}}</td>
-        <td>{{envio.id_camion}}</td>
-        <td>{{envio.peso_total}}</td>
-        <td>{{envio.total_recaudado}}</td>
+        <td>Gestión de encomiendas para Camion con ID: {{envio.id_camion}}</td>
         <td>
-          <button type="button" class="btn btn-primary me-2" style="margin-right: 10px;" [value]="envio.id_camion"
+          <button type="button" class="btn btn-primary me-2" style="margin-right: 10px;" [value]="envio.id"
             (click)="abirControl($event)">Control Encomiendas</button>
           <!-- <button type="button" class="btn btn-danger " [value]="envio.id"
             (click)="eliminar($event)">Eliminar</button> -->
@@ -52,6 +48,49 @@
       </tr>
     </tbody>
   </table>
+</div>
+
+<!-- modal Reporte -->
+<div class="modal fade modal-xl" id="modalReporte" tabindex="-1" aria-labelledby="exampleModalLabel2"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="exampleModalLabel2">Reporte</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container mt-4 shadow-lg p-3 mb-5 bg-body rounded">
+          <div style="display: flex; justify-content: center;">
+            <h2>Listado de Camiones</h2>
+          </div>
+          <!-- <button id="btnCrearSocio" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#modalCrearCliente">Crear</button> -->
+          <table id="tablaClientes" class="table mt-2 table-bordered table-striped">
+            <thead>
+              <tr class="text-center">
+                <th>ID Camion</th>
+                <th>Peso Encomiendas</th>
+                <th>Total Recaudado</th>
+                <th>Porcentaje de entregas</th>
+                <th>Número de viajes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let envio of vectorEnvio">
+                <td>{{envio.id_camion }}</td>
+                <td>{{envio.peso_total}}</td>
+                <td>{{envio.total_recaudado}}</td>
+                <td>{{envio.porcentaje_entrega}}</td>
+                <td>{{envio.num_viajes}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- modal Envio_encomienda -->
@@ -428,7 +467,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">Crear Camion</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Crear Encomienda</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -465,7 +504,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">Crear Cliente</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Editar Cliente</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -506,7 +545,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="exampleModalLabel">Crear Camion</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Editar Camion</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
